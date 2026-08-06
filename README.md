@@ -1,2 +1,12 @@
-# medicore-platform
-Enterprise Hospital Management Platform based on Spring Boot Microservices, Spring Cloud, React, Docker and PostgreSQL.
+# 🏥 MediCore Platform
+
+Enterprise Hospital Management Platform built with:
+
+- Spring Boot
+- Spring Cloud
+- Java 21
+- React
+- Docker
+- PostgreSQL
+
+Work in progress 🚀
