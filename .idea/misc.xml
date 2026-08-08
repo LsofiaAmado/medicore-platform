@@ -9,6 +9,7 @@
         <option value="$PROJECT_DIR$/backend/config-server/config-server/pom.xml" />
         <option value="$PROJECT_DIR$/backend/confi-server/pom.xml" />
         <option value="$PROJECT_DIR$/backend/api-gateway/pom.xml" />
+        <option value="$PROJECT_DIR$/backend/users-service/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">

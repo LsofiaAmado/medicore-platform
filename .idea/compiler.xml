@@ -10,6 +10,15 @@
         <module name="confi-server" />
         <module name="discovery-server" />
       </profile>
+      <profile name="Annotation profile for users-service" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.38/lombok-1.18.38.jar" />
+        </processorPath>
+        <module name="users-service" />
+      </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="config-server" target="21" />
@@ -21,6 +30,7 @@
       <module name="confi-server" options="-parameters" />
       <module name="config-server" options="-parameters" />
       <module name="discovery-server" options="-parameters" />
+      <module name="users-service" options="-parameters" />
     </option>
   </component>
 </project>
