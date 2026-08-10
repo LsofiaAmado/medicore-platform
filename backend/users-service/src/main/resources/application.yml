@@ -1,12 +1,9 @@
-server:
-  port: 8081
-
 spring:
   application:
     name: users-service
 
   config:
-    import: optional:configserver:http://localhost:8888
+    import: configserver:http://localhost:8888
 
 eureka:
   client:

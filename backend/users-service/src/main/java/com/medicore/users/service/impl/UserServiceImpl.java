@@ -7,11 +7,15 @@ import com.medicore.users.repository.UserRepository;
 import com.medicore.users.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import com.medicore.users.exception.UserAlreadyExistsException;
+import com.medicore.users.exception.UserNotFoundException;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
@@ -20,8 +24,8 @@ public class UserServiceImpl implements UserService {
     public UserResponse createUser(CreateUserRequest request) {
 
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new IllegalArgumentException(
-                    "A user with this email already exists"
+            throw new UserAlreadyExistsException(
+                    "A user with email " + request.getEmail() + " already exists"
             );
         }
 
@@ -29,7 +33,6 @@ public class UserServiceImpl implements UserService {
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
                 .email(request.getEmail())
-                .password(request.getPassword())
                 .role(request.getRole())
                 .active(true)
                 .build();
@@ -53,17 +56,42 @@ public class UserServiceImpl implements UserService {
 
         User user = userRepository.findById(id)
                 .orElseThrow(() ->
-                        new IllegalArgumentException("User not found")
+                        new UserNotFoundException(
+                                "User with id " + id + " was not found"
+                        )
                 );
 
         return mapToResponse(user);
     }
 
     @Override
+    public UserResponse updateUser(Long id, CreateUserRequest request) {
+
+        User user = userRepository.findById(id)
+                .orElseThrow(() ->
+                        new IllegalArgumentException("User not found"));
+
+        if (!user.getEmail().equals(request.getEmail())
+                && userRepository.existsByEmail(request.getEmail())) {
+
+            throw new IllegalArgumentException("Email already registered");
+        }
+
+        user.setFirstName(request.getFirstName());
+        user.setLastName(request.getLastName());
+        user.setEmail(request.getEmail());
+        user.setRole(request.getRole());
+
+        User updatedUser = userRepository.save(user);
+
+        return mapToResponse(updatedUser);
+    }
+
+    @Override
     public void deleteUser(Long id) {
 
         if (!userRepository.existsById(id)) {
-            throw new IllegalArgumentException("User not found");
+            throw new UserNotFoundException("User with id " + id + " was not found");
         }
 
         userRepository.deleteById(id);
