@@ -1,11 +1,11 @@
 package com.medicore.users.exception;
 
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 
 import java.time.LocalDateTime;
 
-@Getter
+@Data
 @Builder
 public class ErrorResponse {
 
@@ -13,6 +13,5 @@ public class ErrorResponse {
     private int status;
     private String error;
     private String message;
-    private String path;
 
 }

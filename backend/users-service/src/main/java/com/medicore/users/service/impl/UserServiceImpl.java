@@ -7,9 +7,9 @@ import com.medicore.users.repository.UserRepository;
 import com.medicore.users.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import com.medicore.users.exception.UserAlreadyExistsException;
-import com.medicore.users.exception.UserNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
+import com.medicore.users.exception.DuplicateEmailException;
+import com.medicore.users.exception.ResourceNotFoundException;
 
 import java.util.List;
 
@@ -24,18 +24,16 @@ public class UserServiceImpl implements UserService {
     public UserResponse createUser(CreateUserRequest request) {
 
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new UserAlreadyExistsException(
-                    "A user with email " + request.getEmail() + " already exists"
-            );
+            throw new DuplicateEmailException("A user with email " + request.getEmail() + " already exists");
         }
 
-        User user = User.builder()
-                .firstName(request.getFirstName())
-                .lastName(request.getLastName())
-                .email(request.getEmail())
-                .role(request.getRole())
-                .active(true)
-                .build();
+        User user = new User();
+
+        user.setFirstName(request.getFirstName());
+        user.setLastName(request.getLastName());
+        user.setEmail(request.getEmail());
+        user.setRole(request.getRole());
+        user.setActive(true);
 
         User savedUser = userRepository.save(user);
 
@@ -43,6 +41,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<UserResponse> getAllUsers() {
 
         return userRepository.findAll()
@@ -52,14 +51,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public UserResponse getUserById(Long id) {
 
         User user = userRepository.findById(id)
                 .orElseThrow(() ->
-                        new UserNotFoundException(
-                                "User with id " + id + " was not found"
-                        )
-                );
+                        new ResourceNotFoundException("User with id " + id + " was not found"));
 
         return mapToResponse(user);
     }
@@ -91,7 +88,7 @@ public class UserServiceImpl implements UserService {
     public void deleteUser(Long id) {
 
         if (!userRepository.existsById(id)) {
-            throw new UserNotFoundException("User with id " + id + " was not found");
+            throw new IllegalArgumentException("User with id " + id + " was not found");
         }
 
         userRepository.deleteById(id);
