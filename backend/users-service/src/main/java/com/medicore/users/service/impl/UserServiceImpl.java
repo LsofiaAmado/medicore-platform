@@ -1,11 +1,13 @@
 package com.medicore.users.service.impl;
 
 import com.medicore.users.dto.request.CreateUserRequest;
+import com.medicore.users.dto.response.UserAuthResponse;
 import com.medicore.users.dto.response.UserResponse;
 import com.medicore.users.entity.User;
 import com.medicore.users.repository.UserRepository;
 import com.medicore.users.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.medicore.users.exception.DuplicateEmailException;
@@ -19,25 +21,27 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public UserResponse createUser(CreateUserRequest request) {
 
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new DuplicateEmailException("A user with email " + request.getEmail() + " already exists");
+            throw new IllegalArgumentException("Email already exists");
         }
 
-        User user = new User();
+        User user = User.builder()
+                .firstName(request.getFirstName())
+                .lastName(request.getLastName())
+                .email(request.getEmail())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .role(request.getRole())
+                .active(true)
+                .build();
 
-        user.setFirstName(request.getFirstName());
-        user.setLastName(request.getLastName());
-        user.setEmail(request.getEmail());
-        user.setRole(request.getRole());
-        user.setActive(true);
+        user = userRepository.save(user);
 
-        User savedUser = userRepository.save(user);
-
-        return mapToResponse(savedUser);
+        return mapToResponse(user);
     }
 
     @Override
@@ -57,6 +61,15 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("User with id " + id + " was not found"));
+
+        return mapToResponse(user);
+    }
+
+    @Override
+    public UserResponse getUserByEmail(String email) {
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
         return mapToResponse(user);
     }
@@ -107,4 +120,20 @@ public class UserServiceImpl implements UserService {
                 .updatedAt(user.getUpdatedAt())
                 .build();
     }
+
+    @Override
+    public UserAuthResponse getUserForAuthentication(String email) {
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        return UserAuthResponse.builder()
+                .id(user.getId())
+                .email(user.getEmail())
+                .password(user.getPassword())
+                .role(user.getRole().name())
+                .active(user.getActive())
+                .build();
+    }
+
 }

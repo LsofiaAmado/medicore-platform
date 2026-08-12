@@ -1,6 +1,7 @@
 package com.medicore.users.controller;
 
 import com.medicore.users.dto.request.CreateUserRequest;
+import com.medicore.users.dto.response.UserAuthResponse;
 import com.medicore.users.dto.response.UserResponse;
 import com.medicore.users.service.UserService;
 import jakarta.validation.Valid;
@@ -56,6 +57,15 @@ public class UserController {
         userService.deleteUser(id);
 
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/auth/{email}")
+    public ResponseEntity<UserAuthResponse> getUserForAuthentication(
+            @PathVariable String email) {
+
+        return ResponseEntity.ok(
+                userService.getUserForAuthentication(email)
+        );
     }
 
 }

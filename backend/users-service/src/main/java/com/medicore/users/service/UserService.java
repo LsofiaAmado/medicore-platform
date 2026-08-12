@@ -1,6 +1,7 @@
 package com.medicore.users.service;
 
 import com.medicore.users.dto.request.CreateUserRequest;
+import com.medicore.users.dto.response.UserAuthResponse;
 import com.medicore.users.dto.response.UserResponse;
 
 import java.util.List;
@@ -16,5 +17,9 @@ public interface UserService {
     UserResponse updateUser(Long id, CreateUserRequest request);
 
     void deleteUser(Long id);
+
+    UserResponse getUserByEmail(String email);
+
+    UserAuthResponse getUserForAuthentication(String email);
 
 }
