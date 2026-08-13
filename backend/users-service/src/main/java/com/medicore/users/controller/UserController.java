@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.access.prepost.PreAuthorize;
+import com.medicore.users.dto.request.UpdateUserRequest;
 
 import java.util.List;
 
@@ -44,7 +45,7 @@ public class UserController {
     @PreAuthorize("hasRole('ADMIN') or #id == authentication.principal")
     public ResponseEntity<UserResponse> updateUser(
             @PathVariable Long id,
-            @Valid @RequestBody CreateUserRequest request
+            @Valid @RequestBody UpdateUserRequest request
     ) {
         return ResponseEntity.ok(
                 userService.updateUser(id, request)

@@ -1,6 +1,7 @@
 package com.medicore.users.service.impl;
 
 import com.medicore.users.dto.request.CreateUserRequest;
+import com.medicore.users.dto.request.UpdateUserRequest;
 import com.medicore.users.dto.response.UserAuthResponse;
 import com.medicore.users.dto.response.UserResponse;
 import com.medicore.users.entity.User;
@@ -75,7 +76,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponse updateUser(Long id, CreateUserRequest request) {
+    public UserResponse updateUser(Long id, UpdateUserRequest request) {
 
         User user = userRepository.findById(id)
                 .orElseThrow(() ->
@@ -90,7 +91,6 @@ public class UserServiceImpl implements UserService {
         user.setFirstName(request.getFirstName());
         user.setLastName(request.getLastName());
         user.setEmail(request.getEmail());
-        user.setRole(request.getRole());
 
         User updatedUser = userRepository.save(user);
 
