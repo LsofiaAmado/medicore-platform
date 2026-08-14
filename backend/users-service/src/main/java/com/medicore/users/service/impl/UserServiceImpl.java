@@ -95,6 +95,7 @@ public class UserServiceImpl implements UserService {
         User updatedUser = userRepository.save(user);
 
         return mapToResponse(updatedUser);
+
     }
 
     @Override
