@@ -7,6 +7,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="api-gateway" />
+        <module name="appointments-service" />
         <module name="auth-service" />
         <module name="discovery-server" />
         <module name="confi-server" />
@@ -28,6 +29,7 @@
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="api-gateway" options="-parameters" />
+      <module name="appointments-service" options="-parameters" />
       <module name="auth-service" options="-parameters" />
       <module name="confi-server" options="-parameters" />
       <module name="config-server" options="-parameters" />
